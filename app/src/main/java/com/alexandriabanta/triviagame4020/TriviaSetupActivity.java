@@ -159,11 +159,12 @@ public class TriviaSetupActivity extends AppCompatActivity implements AdapterVie
         //show alertdialog telling user to change their search
         AlertDialog.Builder builder = new AlertDialog.Builder(TriviaSetupActivity.this);
         builder.setMessage(Html.fromHtml("<html>" +
-                        "<p><b>Oh no !</b> " + "Looks like there are not enough questions" + "</p>" +
+                        "<p><b>Oh no! </b> " + "Looks like there are not enough questions" + "</p>" +
                         "<p>in this category with this difficulty. Adjust your selection and try again. </p>"
         ));
 
-        builder.setTitle("Try again").setPositiveButton("Get Nutrition Info",null);
+        builder.setTitle("Try again").setPositiveButton("Change selection",null);
+        builder.show();
     }
 
     private class URLTask extends AsyncTask<Void, Void, Void> {
@@ -198,18 +199,10 @@ public class TriviaSetupActivity extends AppCompatActivity implements AdapterVie
             return null;
         }
 
-        //@Override
-        //protected void onPostExecute() {
-            /*TextView tv = findViewById(R.id.textView);
-            tv.setText(resultData.titleStr);*/
-
-            //TextView tv = findViewById(R.id.tag_textView);
-            //TextView textView = findViewById(R.id.textView);
-            //textView.setText(resultData.tagStr);
-            //foodAdapter.notifyDataSetChanged();
-
-            //dataDownload = null;
-        //}
+        @Override
+        protected void onPostExecute(Void v) {
+            UrlTask = null;
+        }
     }
 
     public void loadingTriviaSetToast() {
