@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/activity_main_background"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/playButton"
+        android:layout_width="180dp"
+        android:layout_height="52dp"
+        android:background="@color/colorButton"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="PLAY!"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.64" />
+
+    <Button
+        android:id="@+id/scoreboardButton"
+        android:layout_width="180dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorButton"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="SCOREBOARD"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/playButton" />
+
+    <Button
+        android:id="@+id/aboutButton"
+        android:layout_width="180dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorButton"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="About"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scoreboardButton" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
