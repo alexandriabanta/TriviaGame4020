@@ -37,6 +37,7 @@ public class TriviaGameActivity extends AppCompatActivity {
     private TriviaDeck triviaDeck;
     private loadQuestionsIntoDeckTask loadDeckTask;
     private int currentQuestionNum = 0;
+    private int score = 0;
     private boolean highScoreAchieved = false;
     private URL url;
 
@@ -110,8 +111,7 @@ public class TriviaGameActivity extends AppCompatActivity {
         builder.setMessage(Html.fromHtml("<html>" +
                 "<p><b>Awesome work, you got it right! </b> " +
                 "<p>The correct answer was " +
-                triviaDeck.questionsDeck[currentQuestionNum].correctAnswer +
-                " </p>"
+                triviaDeck.questionsDeck[currentQuestionNum].correctAnswer + ".</p>"
         ));
 
         builder.setTitle("Correct!").setPositiveButton("Next Question",new DialogInterface.OnClickListener() {
@@ -132,8 +132,7 @@ public class TriviaGameActivity extends AppCompatActivity {
         builder.setMessage(Html.fromHtml("<html>" +
                 "<p><b>Better luck next time! </b> " +
                 "<p>The correct answer was " +
-                triviaDeck.questionsDeck[currentQuestionNum].correctAnswer +
-                " </p>"
+                triviaDeck.questionsDeck[currentQuestionNum].correctAnswer + ".</p>"
         ));
 
         builder.setTitle("Incorrect").setPositiveButton("Next Question",new DialogInterface.OnClickListener() {
@@ -149,7 +148,30 @@ public class TriviaGameActivity extends AppCompatActivity {
     }
 
     private void gameFinishedAlertDialog() {
+        //show alertdialog telling user to change their search
+        AlertDialog.Builder builder = new AlertDialog.Builder(TriviaGameActivity.this);
+        builder.setMessage(Html.fromHtml("<html>" +
+                "<p><b>Congrats, you finished the game! </b> " +
+                "<p>Your score was " + score + " points.</p>"
+        ));
 
+        builder.setTitle("All done!").setPositiveButton("New Game",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int choice) {
+                Intent intent = new Intent(getApplicationContext(), TriviaSetupActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        builder.setNegativeButton("Go to Scoreboard",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int choice) {
+                Intent intent = new Intent(getApplicationContext(), ScoreboardActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        builder.show();
     }
 
     private void loadDeck() {
@@ -237,5 +259,11 @@ public class TriviaGameActivity extends AppCompatActivity {
         ans2TextView.setOnClickListener(onAnswerClicked);
         ans3TextView.setOnClickListener(onAnswerClicked);
         ans4TextView.setOnClickListener(onAnswerClicked);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishActivity(0); //not sure if this is right?
     }
 }
