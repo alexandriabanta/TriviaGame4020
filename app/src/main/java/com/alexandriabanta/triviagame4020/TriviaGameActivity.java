@@ -72,9 +72,10 @@ public class TriviaGameActivity extends AppCompatActivity {
             //See if they clicked the right answer
 
             //if we haven't hit the end of the deck
-            if ((currentQuestionNum) <= (triviaDeck.numOfQuestions-1)) {
+            if ((currentQuestionNum) < (triviaDeck.numOfQuestions-1)) {
                 //if they got the answer right
                 if (clickedAnswerTv == findViewById(R.id.answer1TextView)) {
+                    score++;
                     correctAnswerAlertDialog();
                 }
                 //else they got it wrong
@@ -84,15 +85,18 @@ public class TriviaGameActivity extends AppCompatActivity {
 
                 //move on to the next question
                 currentQuestionNum++;
-            } else {
+            } else if ((currentQuestionNum) == (triviaDeck.numOfQuestions-1)){
+                if (clickedAnswerTv == findViewById(R.id.answer1TextView)) {
+                    score++;
+                }
+                currentQuestionNum++;
+            } // else, take them back to the trivia setup screen
+            else {
                 // if they got a high score, go to the scoreboard
                 if (highScoreAchieved) {
 
                 }
-                // else, take them back to the trivia setup screen
-                else {
-                    gameFinishedAlertDialog();
-                }
+                gameFinishedAlertDialog();
             }
         }
     };
@@ -119,11 +123,16 @@ public class TriviaGameActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int choice) {
                 if ((currentQuestionNum) <= (triviaDeck.numOfQuestions-1)) {
                     updateQuestionInterface();
+                } else if ((currentQuestionNum) > (triviaDeck.numOfQuestions-1)) {
+                    gameFinishedAlertDialog();
                 }
             }
         });
 
-        builder.show();
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setLayout(1000, 600);
+        dialog.show();
     }
 
     private void incorrectAnswerAlertDialog() {
@@ -140,11 +149,16 @@ public class TriviaGameActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int choice) {
                 if ((currentQuestionNum) <= (triviaDeck.numOfQuestions-1)) {
                     updateQuestionInterface();
+                } else if ((currentQuestionNum) > (triviaDeck.numOfQuestions-1)) {
+                    gameFinishedAlertDialog();
                 }
             }
         });
 
-        builder.show();
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setLayout(1000, 600);
+        dialog.show();
     }
 
     private void gameFinishedAlertDialog() {
@@ -160,6 +174,9 @@ public class TriviaGameActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int choice) {
                 Intent intent = new Intent(getApplicationContext(), TriviaSetupActivity.class);
                 startActivity(intent);
+
+                //SAVE SCORE BEFORE RESETTING TO 0
+                score = 0;
             }
         });
 
@@ -168,10 +185,16 @@ public class TriviaGameActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int choice) {
                 Intent intent = new Intent(getApplicationContext(), ScoreboardActivity.class);
                 startActivity(intent);
+
+                //SAVE SCORE BEFORE RESETTING TO 0
+                score = 0;
             }
         });
 
-        builder.show();
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setLayout(1000, 600);
+        dialog.show();
     }
 
     private void loadDeck() {
@@ -182,12 +205,10 @@ public class TriviaGameActivity extends AppCompatActivity {
     }
 
     protected class loadQuestionsIntoDeckTask extends AsyncTask<Void, Void, Void> {
-
         @Override
         protected Void doInBackground(Void... voids) {
 
             //setup Jsonreader for getting info
-
             try {
                 HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
                 InputStream is = connection.getInputStream();
@@ -211,22 +232,24 @@ public class TriviaGameActivity extends AppCompatActivity {
                     JSONObject question = questionsArr.getJSONObject(i);
                     JSONArray incorrectAnswersArr = question.getJSONArray("incorrect_answers");
 
-                    String questionTitle = question.getString("question");
-                    String correctAnswer = question.getString("correct_answer");
-                    String incorrectAnswer1 = incorrectAnswersArr.getString(0);
-                    String incorrectAnswer2 = incorrectAnswersArr.getString(1);
-                    String incorrectAnswer3 = incorrectAnswersArr.getString(2);
+                    //get strings from array and parse them
+                    String questionTitle = parseString(question.getString("question"));
+                    String correctAnswer = parseString(question.getString("correct_answer"));
+                    String incorrectAnswer1 = parseString(incorrectAnswersArr.getString(0));
+                    String incorrectAnswer2 = parseString(incorrectAnswersArr.getString(1));
+                    String incorrectAnswer3 = parseString(incorrectAnswersArr.getString(2));
 
                     triviaDeck.questionsDeck[i].setQuestion(
                             questionTitle, correctAnswer,
                             incorrectAnswer1, incorrectAnswer2, incorrectAnswer3);
 
+                    Log.i("","---------------------------");
                     Log.i("question title: ",""+ questionTitle);
                     Log.i("correct answer: ",""+ correctAnswer);
-                    Log.i("","---------------------------");
                     Log.i("incorrect answer1: ","" + incorrectAnswer1);
                     Log.i("incorrect answer2: ","" + incorrectAnswer2);
                     Log.i("incorrect answer3: ","" + incorrectAnswer3);
+                    Log.i("","---------------------------");
                 }
 
             } catch (IOException e) {
@@ -236,8 +259,6 @@ public class TriviaGameActivity extends AppCompatActivity {
             }
             return null;
         }
-
-
 
         @Override
         protected void onPostExecute(Void v) {
@@ -265,5 +286,20 @@ public class TriviaGameActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finishActivity(0); //not sure if this is right?
+    }
+
+    private String parseString(String inputString) {
+        //use replace all to fix unicode escape characters
+
+        inputString.replaceAll("&quot;","\"");     //quote
+        inputString.replaceAll("&ldquo;","\"");
+        inputString.replaceAll("&#039;","\'");      //apostrophe/single quote
+        inputString.replaceAll("&rsquo;","\'");
+        inputString.replaceAll("&amp;","&");        //ampersand
+        inputString.replaceAll("&Uuml;","ü");       //umlaut
+        inputString.replaceAll("&hellip;","...");
+        inputString.replaceAll("&oacute;","ó");
+
+        return inputString;
     }
 }
