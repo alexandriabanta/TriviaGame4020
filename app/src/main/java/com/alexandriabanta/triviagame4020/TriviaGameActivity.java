@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -289,17 +290,6 @@ public class TriviaGameActivity extends AppCompatActivity {
     }
 
     private String parseString(String inputString) {
-        //use replace all to fix unicode escape characters
-
-        inputString.replaceAll("&quot;","\"");     //quote
-        inputString.replaceAll("&ldquo;","\"");
-        inputString.replaceAll("&#039;","\'");      //apostrophe/single quote
-        inputString.replaceAll("&rsquo;","\'");
-        inputString.replaceAll("&amp;","&");        //ampersand
-        inputString.replaceAll("&Uuml;","ü");       //umlaut
-        inputString.replaceAll("&hellip;","...");
-        inputString.replaceAll("&oacute;","ó");
-
-        return inputString;
+        return HtmlCompat.fromHtml(inputString, HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
     }
 }
