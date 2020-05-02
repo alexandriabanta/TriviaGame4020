@@ -39,13 +39,14 @@ public class TriviaSetupActivity extends AppCompatActivity implements AdapterVie
 
     private URLTask UrlTask;
     private int ApiReturnCode = 0;
+    private String urlString = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.trivia_setup);
 
-        Spinner categorySpinner = (Spinner) findViewById(R.id.categorySpinner);
+        Spinner categorySpinner = findViewById(R.id.categorySpinner);
         ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(this,
                 R.array.categories, android.R.layout.simple_spinner_item);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -63,7 +64,7 @@ public class TriviaSetupActivity extends AppCompatActivity implements AdapterVie
 
         categorySpinner.setAdapter(categoryAdapter);
 
-        Spinner difficultySpinner = (Spinner) findViewById(R.id.difficultySpinner);
+        Spinner difficultySpinner = findViewById(R.id.difficultySpinner);
         ArrayAdapter<CharSequence> difficultyAdapter = ArrayAdapter.createFromResource(this,
                 R.array.difficulty, android.R.layout.simple_spinner_item);
         difficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -103,6 +104,7 @@ public class TriviaSetupActivity extends AppCompatActivity implements AdapterVie
                 //then this is a
                 if (ApiReturnCode == 0) {
                     Intent intent = new Intent(getApplicationContext(), TriviaGameActivity.class);
+                    intent.putExtra("urlString",urlString);
                     startActivity(intent);
                 } else {
                     showTryAgainAlertDialog();
@@ -173,7 +175,7 @@ public class TriviaSetupActivity extends AppCompatActivity implements AdapterVie
         protected Void doInBackground(Void... voids) {
             //UrlTask
             URL url = buildApiUrl(chosenCategory,chosenDifficulty,numOfQuestions);
-
+            urlString = url.toString();
 
             try {
                 HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
@@ -207,7 +209,7 @@ public class TriviaSetupActivity extends AppCompatActivity implements AdapterVie
 
     public void loadingTriviaSetToast() {
         Context context = getApplicationContext();
-        CharSequence text = "Loading trivia set, please wait...";
+        CharSequence text = "Loading trivia deck...";
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
@@ -224,7 +226,7 @@ public class TriviaSetupActivity extends AppCompatActivity implements AdapterVie
             categoryNum = 11;
         } else if (categoryString.equals("Entertainment: Music")) {
             categoryNum = 12;
-        } else if (categoryString.equals("Entertainment: Television")) {
+        } else if (categoryString.equals("Entertainment: Television")) {    //skipped #13 intentionally
             categoryNum = 14;
         } else if (categoryString.equals("Entertainment: Video Games")) {
             categoryNum = 15;
