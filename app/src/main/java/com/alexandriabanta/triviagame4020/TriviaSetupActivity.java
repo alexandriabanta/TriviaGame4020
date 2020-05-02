@@ -38,7 +38,7 @@ public class TriviaSetupActivity extends AppCompatActivity implements AdapterVie
     private int numOfQuestions = 10;
 
     private URLTask UrlTask;
-    private int ApiReturnCode = 10;
+    private int ApiReturnCode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,8 +224,6 @@ public class TriviaSetupActivity extends AppCompatActivity implements AdapterVie
             categoryNum = 11;
         } else if (categoryString.equals("Entertainment: Music")) {
             categoryNum = 12;
-        } else if (categoryString.equals("Entertainment: Theatre")) {
-            categoryNum = 13;
         } else if (categoryString.equals("Entertainment: Television")) {
             categoryNum = 14;
         } else if (categoryString.equals("Entertainment: Video Games")) {
