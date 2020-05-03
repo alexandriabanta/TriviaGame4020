@@ -290,6 +290,7 @@ public class TriviaGameActivity extends AppCompatActivity {
     }
 
     private String parseString(String inputString) {
-        return HtmlCompat.fromHtml(inputString, HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
+        return HtmlCompat.fromHtml(inputString,
+                HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
     }
 }
