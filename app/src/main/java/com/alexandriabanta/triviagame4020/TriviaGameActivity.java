@@ -60,11 +60,9 @@ public class TriviaGameActivity extends AppCompatActivity {
         Uri.Builder builder = Uri.parse(urlString).buildUpon();
 
         url = null;
-        try {
-            url = new URL(builder.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        try { url = new URL(builder.toString());
+        } catch (MalformedURLException e) { e.printStackTrace(); }
+
         Log.i("TriviaGame-- ","url: " + url.toString());
 
         //proceed to load the deck into the activity
@@ -310,8 +308,8 @@ public class TriviaGameActivity extends AppCompatActivity {
             //reset the loadDeckTask
             loadDeckTask = null;
             //update the UI
-            updateQuestionInterface();
             initializeCorrectAnswerValArray();
+            updateQuestionInterface();
         }
     }
 
