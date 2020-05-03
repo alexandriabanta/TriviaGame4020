@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Random;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -34,12 +35,16 @@ public class TriviaGameActivity extends AppCompatActivity {
     private TextView ans2TextView;
     private TextView ans3TextView;
     private TextView ans4TextView;
+    private TextView scoreTextView;
 
     private TriviaDeck triviaDeck;
     private loadQuestionsIntoDeckTask loadDeckTask;
     private int currentQuestionNum = 0;
     private int score = 0;
     private boolean highScoreAchieved = false;
+    private int correctAnswerValArray[];
+    private int selectedTv = 1;
+    private Random random = new Random();
     private URL url;
 
     @Override
@@ -64,27 +69,33 @@ public class TriviaGameActivity extends AppCompatActivity {
 
         //proceed to load the deck into the activity
         loadDeck();
-
     }
 
     private View.OnClickListener onAnswerClicked = new View.OnClickListener() {
         @Override
         public void onClick(View clickedAnswerTv) {
             //See if they clicked the right answer
+            if (clickedAnswerTv == findViewById(R.id.answer1TextView)) selectedTv = 1;
+            else if (clickedAnswerTv == findViewById(R.id.answer2TextView)) selectedTv = 2;
+            else if (clickedAnswerTv == findViewById(R.id.answer3TextView)) selectedTv = 3;
+            else selectedTv = 4;
 
             //if we haven't hit the end of the deck
             if ((currentQuestionNum) < (triviaDeck.numOfQuestions-1)) {
                 //if they got the answer right
-                if (clickedAnswerTv == findViewById(R.id.answer1TextView)) {
+                if (selectedTv == correctAnswerValArray[currentQuestionNum]) {
                     score++;
                     correctAnswerAlertDialog();
-                }
-                //else they got it wrong
-                else {
+                } else { //else they got it wrong
                     incorrectAnswerAlertDialog();
                 }
 
-                //move on to the next question
+                Log.i(" ","---------------------------");
+                Log.i("OnClick","Question " + currentQuestionNum + " correct ans: " + correctAnswerValArray[currentQuestionNum]);
+                Log.i("OnClick","Question " + currentQuestionNum + " selected ans: " + selectedTv);
+                Log.i(" ","---------------------------");
+
+                // move on to the next question
                 currentQuestionNum++;
             } else if ((currentQuestionNum) == (triviaDeck.numOfQuestions-1)){
                 if (clickedAnswerTv == findViewById(R.id.answer1TextView)) {
@@ -103,11 +114,35 @@ public class TriviaGameActivity extends AppCompatActivity {
     };
 
     private void updateQuestionInterface() {
+        //update questionTextView
         questionTextView.setText(triviaDeck.questionsDeck[currentQuestionNum].questionTitle);
-        ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
-        ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
-        ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
-        ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
+
+        // the correct answer should go into the textview corresponding to the
+        // value in the correctAnswerValArr[currentQuestionNum].
+
+        int correctViewNum = correctAnswerValArray[currentQuestionNum];
+
+        if (correctViewNum == 1) {
+            ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
+            ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
+            ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
+            ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
+        } else if (correctViewNum == 2) {
+            ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
+            ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
+            ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
+            ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
+        } else if (correctViewNum == 3) {
+            ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
+            ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
+            ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
+            ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
+        } else {
+            ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
+            ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
+            ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
+            ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
+        }
     }
 
     private void correctAnswerAlertDialog() {
@@ -129,6 +164,9 @@ public class TriviaGameActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //also update score textview
+        scoreTextView.setText("Score: " + score);
 
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
@@ -226,9 +264,14 @@ public class TriviaGameActivity extends AppCompatActivity {
 
                 //now get the information and store it into the deck
                 JSONArray questionsArr = reader.getJSONArray("results");
-                triviaDeck = new TriviaDeck(questionsArr.length());
 
-                for(int i = 0; i < questionsArr.length(); i++)  {
+                //set up arrays to be the appropriate length
+                triviaDeck = new TriviaDeck(questionsArr.length());
+                correctAnswerValArray = new int[questionsArr.length()];
+
+                Log.i("","---------------------------");
+
+                for (int i = 0; i < questionsArr.length(); i++)  {
                     //need to get title, correct answer, and incorrect answers
                     JSONObject question = questionsArr.getJSONObject(i);
                     JSONArray incorrectAnswersArr = question.getJSONArray("incorrect_answers");
@@ -244,7 +287,6 @@ public class TriviaGameActivity extends AppCompatActivity {
                             questionTitle, correctAnswer,
                             incorrectAnswer1, incorrectAnswer2, incorrectAnswer3);
 
-                    Log.i("","---------------------------");
                     Log.i("question title: ",""+ questionTitle);
                     Log.i("correct answer: ",""+ correctAnswer);
                     Log.i("incorrect answer1: ","" + incorrectAnswer1);
@@ -252,6 +294,8 @@ public class TriviaGameActivity extends AppCompatActivity {
                     Log.i("incorrect answer3: ","" + incorrectAnswer3);
                     Log.i("","---------------------------");
                 }
+
+                Log.i("","---------------------------");
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -267,11 +311,13 @@ public class TriviaGameActivity extends AppCompatActivity {
             loadDeckTask = null;
             //update the UI
             updateQuestionInterface();
+            initializeCorrectAnswerValArray();
         }
     }
 
     private void initializeTextViews() {
         questionTextView = findViewById(R.id.questionTitleTextView);
+        scoreTextView = findViewById(R.id.scoreTextView);
         ans1TextView = findViewById(R.id.answer1TextView);
         ans2TextView = findViewById(R.id.answer2TextView);
         ans3TextView = findViewById(R.id.answer3TextView);
@@ -281,6 +327,14 @@ public class TriviaGameActivity extends AppCompatActivity {
         ans2TextView.setOnClickListener(onAnswerClicked);
         ans3TextView.setOnClickListener(onAnswerClicked);
         ans4TextView.setOnClickListener(onAnswerClicked);
+    }
+
+    private void initializeCorrectAnswerValArray() {
+        for (int i = 0; i < triviaDeck.numOfQuestions; i++) {
+            if (correctAnswerValArray[i] == 0 || correctAnswerValArray == null) {
+                correctAnswerValArray[i] = random.nextInt(4) + 1;  // 1 -4
+            }
+        }
     }
 
     @Override

@@ -29,7 +29,6 @@
             android:id="@+id/answer1TextView"
             android:layout_width="253dp"
             android:layout_height="58dp"
-            android:layout_marginTop="32dp"
             android:background="@color/colorButton"
             android:fontFamily="sans-serif-condensed-light"
             android:paddingVertical="12dp"
@@ -87,5 +86,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/answer3TextView"
             tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/scoreTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed-light"
+            android:text="Score: 0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/answer4TextView" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
