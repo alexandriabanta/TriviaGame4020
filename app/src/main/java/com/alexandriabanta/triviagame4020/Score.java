@@ -4,8 +4,6 @@ import java.util.Date;
 
 public class Score {
 
-
-
     private int score_id;
     private int score;
     private int num_of_questions;

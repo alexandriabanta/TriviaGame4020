@@ -36,6 +36,7 @@ public class TriviaGameActivity extends AppCompatActivity {
     private TextView ans3TextView;
     private TextView ans4TextView;
     private TextView scoreTextView;
+    private TextView questionNumTextView;
 
     private TriviaDeck triviaDeck;
     private loadQuestionsIntoDeckTask loadDeckTask;
@@ -79,7 +80,7 @@ public class TriviaGameActivity extends AppCompatActivity {
             else selectedTv = 4;
 
             //if we haven't hit the end of the deck
-            if ((currentQuestionNum) < (triviaDeck.numOfQuestions-1)) {
+            if ((currentQuestionNum) <= (triviaDeck.numOfQuestions-1)) {
                 //if they got the answer right
                 if (selectedTv == correctAnswerValArray[currentQuestionNum]) {
                     score++;
@@ -93,27 +94,22 @@ public class TriviaGameActivity extends AppCompatActivity {
                 Log.i("OnClick","Question " + currentQuestionNum + " selected ans: " + selectedTv);
                 Log.i(" ","---------------------------");
 
-                // move on to the next question
-                currentQuestionNum++;
-            } else if ((currentQuestionNum) == (triviaDeck.numOfQuestions-1)){
-                if (clickedAnswerTv == findViewById(R.id.answer1TextView)) {
-                    score++;
-                }
+                //move on to the next question
                 currentQuestionNum++;
             } // else, take them back to the trivia setup screen
             else {
-                // if they got a high score, go to the scoreboard
-                if (highScoreAchieved) {
-
-                }
+                // if they got a high score, go to the scoreboard (maybe later)
+                if (highScoreAchieved) { }
                 gameFinishedAlertDialog();
             }
         }
     };
 
     private void updateQuestionInterface() {
+        initializeCorrectAnswerValArray();
         //update questionTextView
         questionTextView.setText(triviaDeck.questionsDeck[currentQuestionNum].questionTitle);
+        questionNumTextView.setText("Question "+ (currentQuestionNum + 1) + "/" + triviaDeck.numOfQuestions);
 
         // the correct answer should go into the textview corresponding to the
         // value in the correctAnswerValArr[currentQuestionNum].
@@ -166,9 +162,10 @@ public class TriviaGameActivity extends AppCompatActivity {
         //also update score textview
         scoreTextView.setText("Score: " + score);
 
+
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setLayout(1000, 600);
+        dialog.getWindow().setLayout(1000, 500);
         dialog.show();
     }
 
@@ -194,7 +191,7 @@ public class TriviaGameActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setLayout(1000, 600);
+        dialog.getWindow().setLayout(1000, 500);
         dialog.show();
     }
 
@@ -264,6 +261,7 @@ public class TriviaGameActivity extends AppCompatActivity {
                 JSONArray questionsArr = reader.getJSONArray("results");
 
                 //set up arrays to be the appropriate length
+                Log.i("triviadeck has ", "" + triviaDeck.numOfQuestions + " questions");
                 triviaDeck = new TriviaDeck(questionsArr.length());
                 correctAnswerValArray = new int[questionsArr.length()];
 
@@ -297,8 +295,12 @@ public class TriviaGameActivity extends AppCompatActivity {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                triviaDeck = new TriviaDeck();
+                correctAnswerValArray = new int[triviaDeck.numOfQuestions];
             } catch (JSONException e) {
                 e.printStackTrace();
+                triviaDeck = new TriviaDeck();
+                correctAnswerValArray = new int[triviaDeck.numOfQuestions];
             }
             return null;
         }
@@ -320,6 +322,7 @@ public class TriviaGameActivity extends AppCompatActivity {
         ans2TextView = findViewById(R.id.answer2TextView);
         ans3TextView = findViewById(R.id.answer3TextView);
         ans4TextView = findViewById(R.id.answer4TextView);
+        questionNumTextView = findViewById(R.id.questionNumTextView);
 
         ans1TextView.setOnClickListener(onAnswerClicked);
         ans2TextView.setOnClickListener(onAnswerClicked);

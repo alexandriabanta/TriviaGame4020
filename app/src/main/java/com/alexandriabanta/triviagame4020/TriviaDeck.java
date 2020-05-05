@@ -2,13 +2,19 @@ package com.alexandriabanta.triviagame4020;
 
 public class TriviaDeck {
 
-    public int numOfQuestions = 10;
+    public int numOfQuestions;
     public String category;
 
     public Question questionsDeck[];
 
     public TriviaDeck() {
-        numOfQuestions = 0;
+
+        numOfQuestions = 10;
+        questionsDeck = new Question[numOfQuestions];
+
+        for (int i = 0; i < numOfQuestions; i++) {
+            questionsDeck[i] = new Question();
+        }
     }
 
     public TriviaDeck(int arraySize) {
