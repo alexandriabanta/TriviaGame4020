@@ -47,6 +47,7 @@ public class TriviaGameActivity extends AppCompatActivity {
     private int selectedTv = 1;
     private Random random = new Random();
     private URL url;
+    private boolean failed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class TriviaGameActivity extends AppCompatActivity {
         try { url = new URL(builder.toString());
         } catch (MalformedURLException e) { e.printStackTrace(); }
 
-        Log.i("TriviaGame-- ","url: " + url.toString());
+        //Log.i("TriviaGame-- ","url: " + url.toString());
 
         //proceed to load the deck into the activity
         loadDeck();
@@ -108,34 +109,36 @@ public class TriviaGameActivity extends AppCompatActivity {
     private void updateQuestionInterface() {
         initializeCorrectAnswerValArray();
         //update questionTextView
-        questionTextView.setText(triviaDeck.questionsDeck[currentQuestionNum].questionTitle);
-        questionNumTextView.setText("Question "+ (currentQuestionNum + 1) + "/" + triviaDeck.numOfQuestions);
+        if (!failed) {
+            questionTextView.setText(triviaDeck.questionsDeck[currentQuestionNum].questionTitle);
+            questionNumTextView.setText("Question " + (currentQuestionNum + 1) + "/" + triviaDeck.numOfQuestions);
 
-        // the correct answer should go into the textview corresponding to the
-        // value in the correctAnswerValArr[currentQuestionNum].
+            // the correct answer should go into the textview corresponding to the
+            // value in the correctAnswerValArr[currentQuestionNum].
 
-        int correctViewNum = correctAnswerValArray[currentQuestionNum];
+            int correctViewNum = correctAnswerValArray[currentQuestionNum];
 
-        if (correctViewNum == 1) {
-            ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
-            ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
-            ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
-            ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
-        } else if (correctViewNum == 2) {
-            ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
-            ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
-            ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
-            ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
-        } else if (correctViewNum == 3) {
-            ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
-            ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
-            ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
-            ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
-        } else {
-            ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
-            ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
-            ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
-            ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
+            if (correctViewNum == 1) {
+                ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
+                ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
+                ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
+                ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
+            } else if (correctViewNum == 2) {
+                ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
+                ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
+                ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
+                ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
+            } else if (correctViewNum == 3) {
+                ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
+                ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
+                ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
+                ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
+            } else {
+                ans4TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].correctAnswer);
+                ans1TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer1);
+                ans2TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer2);
+                ans3TextView.setText(triviaDeck.questionsDeck[currentQuestionNum].incorrectAnswer3);
+            }
         }
     }
 
@@ -231,6 +234,28 @@ public class TriviaGameActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void tryNewDeckAlertDialog() {
+        //show alertdialog telling user to change their search
+        AlertDialog.Builder builder = new AlertDialog.Builder(TriviaGameActivity.this);
+        builder.setMessage(Html.fromHtml("<html>" +
+                "<p><b>Oh no, it looks like there aren't enough questions in this category/difficulty. </b> " +
+                "<p>Please make a new selection and try again..</p>"
+        ));
+
+        builder.setNegativeButton("New deck",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int choice) {
+                Intent intent = new Intent(getApplicationContext(), TriviaSetupActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setLayout(1000, 600);
+        dialog.show();
+    }
+
     private void loadDeck() {
         if (loadDeckTask == null) {
             loadDeckTask = new loadQuestionsIntoDeckTask();
@@ -259,6 +284,7 @@ public class TriviaGameActivity extends AppCompatActivity {
 
                 //now get the information and store it into the deck
                 JSONArray questionsArr = reader.getJSONArray("results");
+                int request_code = reader.getInt("response_code");
 
                 //set up arrays to be the appropriate length
                 //Log.i("triviadeck has ", "" + triviaDeck.numOfQuestions + " questions");
@@ -266,33 +292,36 @@ public class TriviaGameActivity extends AppCompatActivity {
                 correctAnswerValArray = new int[questionsArr.length()];
 
                 Log.i("","---------------------------");
+                Log.i("request code: ",""+ request_code);
 
-                for (int i = 0; i < questionsArr.length(); i++)  {
-                    //need to get title, correct answer, and incorrect answers
-                    JSONObject question = questionsArr.getJSONObject(i);
-                    JSONArray incorrectAnswersArr = question.getJSONArray("incorrect_answers");
+                if (request_code == 0) {
+                    failed = false;
+                    for (int i = 0; i < questionsArr.length(); i++) {
+                        //need to get title, correct answer, and incorrect answers
+                        JSONObject question = questionsArr.getJSONObject(i);
+                        JSONArray incorrectAnswersArr = question.getJSONArray("incorrect_answers");
 
-                    //get strings from array and parse them
-                    String questionTitle = parseString(question.getString("question"));
-                    String correctAnswer = parseString(question.getString("correct_answer"));
-                    String incorrectAnswer1 = parseString(incorrectAnswersArr.getString(0));
-                    String incorrectAnswer2 = parseString(incorrectAnswersArr.getString(1));
-                    String incorrectAnswer3 = parseString(incorrectAnswersArr.getString(2));
+                        //get strings from array and parse them
+                        String questionTitle = parseString(question.getString("question"));
+                        String correctAnswer = parseString(question.getString("correct_answer"));
+                        String incorrectAnswer1 = parseString(incorrectAnswersArr.getString(0));
+                        String incorrectAnswer2 = parseString(incorrectAnswersArr.getString(1));
+                        String incorrectAnswer3 = parseString(incorrectAnswersArr.getString(2));
 
-                    triviaDeck.questionsDeck[i].setQuestion(
-                            questionTitle, correctAnswer,
-                            incorrectAnswer1, incorrectAnswer2, incorrectAnswer3);
+                        triviaDeck.questionsDeck[i].setQuestion(
+                                questionTitle, correctAnswer,
+                                incorrectAnswer1, incorrectAnswer2, incorrectAnswer3);
 
-                    Log.i("question title: ",""+ questionTitle);
-                    Log.i("correct answer: ",""+ correctAnswer);
-                    Log.i("incorrect answer1: ","" + incorrectAnswer1);
-                    Log.i("incorrect answer2: ","" + incorrectAnswer2);
-                    Log.i("incorrect answer3: ","" + incorrectAnswer3);
-                    Log.i("","---------------------------");
-                }
+                        Log.i("question title: ", "" + questionTitle);
+                        Log.i("correct answer: ", "" + correctAnswer);
+                        Log.i("incorrect answer1: ", "" + incorrectAnswer1);
+                        Log.i("incorrect answer2: ", "" + incorrectAnswer2);
+                        Log.i("incorrect answer3: ", "" + incorrectAnswer3);
+                        Log.i("", "---------------------------");
+                    }
 
-                Log.i("","---------------------------");
-
+                    Log.i("", "---------------------------");
+                } else failed = true;
             } catch (IOException e) {
                 e.printStackTrace();
                 triviaDeck = new TriviaDeck();
@@ -312,6 +341,10 @@ public class TriviaGameActivity extends AppCompatActivity {
             //update the UI
             initializeCorrectAnswerValArray();
             updateQuestionInterface();
+            if (failed) {
+                tryNewDeckAlertDialog();
+                failed = false;
+            }
         }
     }
 
