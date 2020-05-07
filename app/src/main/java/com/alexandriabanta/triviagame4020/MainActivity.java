@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
         Button scoreboardButton = findViewById(R.id.scoreboardButton);
         Button aboutButton = findViewById(R.id.aboutButton);
 
+        Button backupStartQuiz = findViewById(R.id.playbackup_button);
+
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), TriviaSetupActivity.class);
@@ -29,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         scoreboardButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), ScoreboardActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ScoreActivity.class);
                 startActivity(intent);
             }
         });
@@ -40,5 +42,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        backupStartQuiz.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), BackUpMainActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }

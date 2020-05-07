@@ -75,6 +75,7 @@ public class ScoreboardActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view, int position) {
+
             //City city = cities.get(getAdapterPosition()); nmj
 
             String brandNameString = "";

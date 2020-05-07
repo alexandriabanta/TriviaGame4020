@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/purple_black_background_2"
+
+    tools:context=".BackUpMainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/start_quiz_button"
+                android:layout_width="180dp"
+                android:layout_height="52dp"
+                android:text="Start Quiz"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/quiz_type_spinner"
+                app:layout_constraintVertical_bias="0.105" />
+
+            <Button
+                android:id="@+id/scoreboardButton"
+                android:layout_width="180dp"
+                android:layout_height="48dp"
+                android:text="SCOREBOARD"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.502"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/start_quiz_button" />
+
+            <Button
+                android:id="@+id/aboutButton"
+                android:layout_width="180dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="About"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/scoreboardButton" />
+
+
+
+            <Spinner
+                android:id="@+id/quiz_type_spinner"
+                android:layout_width="229dp"
+                android:layout_height="41dp"
+                android:layout_marginTop="24dp"
+                android:textColor="#fff"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.831"
+                app:layout_constraintStart_toEndOf="@+id/quiz_type_textView"
+                app:layout_constraintTop_toBottomOf="@+id/difficulty_spinner" />
+
+            <Spinner
+                android:id="@+id/difficulty_spinner"
+                android:layout_width="210dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.69"
+                app:layout_constraintStart_toEndOf="@+id/difficulty_level_textView"
+                app:layout_constraintTop_toBottomOf="@+id/categories_spinner" />
+
+            <TextView
+                android:id="@+id/quiz_title_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Making a Quiz"
+                android:textSize="50sp"
+                android:textColor="#fff"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/quiz_description_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="50px"
+                android:text="Wanna take a quiz? Select the number of questions, category, difficulty level, and type to generate a quiz!"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:textColor="#fff"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/quiz_title_textview" />
+
+            <TextView
+                android:id="@+id/numOfQuestions_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Number of Questions (1-30): "
+                android:paddingLeft="30px"
+                android:textColor="#fff"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/quiz_description_textview" />
+
+
+            <TextView
+                android:id="@+id/difficulty_level_textView"
+                android:layout_width="159dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="32dp"
+                android:text="Difficulty Level"
+                android:textColor="#fff"
+                android:paddingLeft="30px"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/quiz_category_textView" />
+
+            <TextView
+                android:id="@+id/quiz_type_textView"
+                android:layout_width="105dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Quiz Type"
+                android:textColor="#fff"
+                android:paddingLeft="30px"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/difficulty_level_textView" />
+
+            <TextView
+                android:id="@+id/quiz_category_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Category"
+                android:textColor="#fff"
+                android:paddingLeft="30px"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/numOfQuestions_textView" />
+
+
+            <Spinner
+                android:id="@+id/num_questions_spinner"
+                android:layout_width="112dp"
+                android:layout_height="34dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/numOfQuestions_textView"
+                app:layout_constraintTop_toBottomOf="@+id/quiz_description_textview" />
+
+            <Spinner
+                android:id="@+id/categories_spinner"
+                android:layout_width="296dp"
+                android:layout_height="37dp"
+                android:layout_marginTop="24dp"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.434"
+                app:layout_constraintStart_toEndOf="@+id/quiz_category_textView"
+                app:layout_constraintTop_toBottomOf="@+id/num_questions_spinner" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

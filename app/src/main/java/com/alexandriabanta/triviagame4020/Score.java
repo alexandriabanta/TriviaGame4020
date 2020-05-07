@@ -17,6 +17,15 @@ public class Score {
 
     }
 
+    public Score(int score, int num_of_questions, String category, String difficulty, String type) {
+
+        this.score = score;
+        this.num_of_questions = num_of_questions;
+        this.category = category;
+        this.difficulty = difficulty;
+        this.type = type;
+    }
+
     public Score(int score_id, int score, int num_of_questions, String category, String difficulty, String type, Date date_created) {
         this.score_id = score_id;
         this.score = score;
