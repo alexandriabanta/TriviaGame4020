@@ -261,7 +261,7 @@ public class TriviaGameActivity extends AppCompatActivity {
                 JSONArray questionsArr = reader.getJSONArray("results");
 
                 //set up arrays to be the appropriate length
-                Log.i("triviadeck has ", "" + triviaDeck.numOfQuestions + " questions");
+                //Log.i("triviadeck has ", "" + triviaDeck.numOfQuestions + " questions");
                 triviaDeck = new TriviaDeck(questionsArr.length());
                 correctAnswerValArray = new int[questionsArr.length()];
 
